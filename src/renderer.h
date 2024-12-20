@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "SDL.h"
+#include "food.h"
 #include "snake.h"
 
 class Renderer {
@@ -12,6 +13,7 @@ class Renderer {
   ~Renderer();
 
   void Render(Snake const snake, SDL_Point const &food);
+  void Render(Snake const snake, Foods foods);
   void UpdateWindowTitle(int score, int fps);
 
  private:
