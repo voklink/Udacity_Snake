@@ -9,6 +9,9 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1)) {
   PlaceNewFood();
+  PlaceNewFood();
+  PlaceNewFood();
+  PlaceNewFood();
 }
 
 void Game::Run(Controller const &controller, Renderer *renderer,
@@ -26,7 +29,6 @@ void Game::Run(Controller const &controller, Renderer *renderer,
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake, *this);
-    // controller.HandleInput(running, snake);
     Update();
     renderer->Render(snake, _foods);
 
@@ -49,15 +51,8 @@ void Game::Run(Controller const &controller, Renderer *renderer,
     // achieve the correct frame rate.
     if (frame_duration < target_frame_duration) {
       SDL_Delay(target_frame_duration - frame_duration);
-      myPRINT("     delay");
     }
-    else {
-      myPRINT("------------------------------------------------------------NO DELAY");
-    }
-
-    // running = still_running;
   }
-  return;
 }
 
 void Game::PlaceNewFood() {
@@ -80,9 +75,9 @@ void Game::PlaceNewFood() {
 // }
 
 void Game::Update() {
-  myFUNC;
   if (this->_isPaused) return;
   if (!snake.alive) return;
+  myFUNC;
 
   snake.Update();
 
@@ -91,26 +86,31 @@ void Game::Update() {
 
   std::cout << "Snake is at "  << new_x << "/" << new_y << "\n";
   // Check if there's food over here
-  auto it = _foods.checkPositionForFood(new_x, new_y);
-  if (it != _foods.getFoodList().end()) 
+  int indexWithFood = _foods.checkPositionForFood(new_x, new_y);
+  if (indexWithFood != -1) 
   {
+    myPRINT("Scored!!!")
+
     score++;
-    _foods.removeFood(it);
+    _foods.removeFood(indexWithFood);
     PlaceNewFood();
     // Grow snake and increase speed.
     snake.GrowBody();
     // snake.speed += 0.02;
   }
-  myPRINT("FoodList after Update:")
-  _foods.printFoodList();
+  else {
+    std::cout << "No food found at (" << new_x << ", " << new_y << ")" << std::endl;
+  }
+
+  // myPRINT("FoodList after Update:")
+  // _foods.printFoodList();
   myPRINT("================================================")
   return;
 }
 
-// Adding Pause-Functionality
-
 // Toggle the Pause status
-void Game::togglePause(){
+void Game::togglePause()
+{
   this->_isPaused = this->_isPaused ? false : true;
 }
 

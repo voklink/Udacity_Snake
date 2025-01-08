@@ -25,38 +25,31 @@ void Foods::addFoodItem(int x, int y)
     } 
 }
 
-// Food* Foods::checkPositionForFood(const int x,const int y)
-// {
-//     for (auto &food : _foodList) 
-//     {
-//         if (food.getCoord().x == x && food.getCoord().y == y) 
-//         {
-//             return &food;
-//         }
-//     }
-//     return nullptr; // Wenn kein Food-Objekt an den Koordinaten gefunden wird
-// }
-
-std::vector<Food>::iterator Foods::checkPositionForFood(int x, int y)
- {
-    for (auto it = _foodList.begin(); it != _foodList.end(); ++it) 
+int Foods::checkPositionForFood(const int x, const int y) 
+{
+    for (size_t i = 0; i < _foodList.size(); ++i) 
     {
-        if (it->getCoord().x == x && it->getCoord().y == y)
-        {
-            std::cout <<        "Found food at " << x << "/" << y << "\n";
-            return it;
+        SDL_Point coord = _foodList[i].getCoord();
+        std::cout << "Checking food at (" << coord.x << ", " << coord.y << ") against (" << x << ", " << y << ")" << std::endl;
+        if (coord.x == x && coord.y == y) {
+            std::cout << "Found food at " << x << "/" << y << "\n";
+            return i;
         }
     }
-    return _foodList.end(); // Wenn kein Food-Objekt an den Koordinaten gefunden wird
+    return -1; // If there's no food object at that location, return -1
 }
 
-void Foods::removeFood(std::vector<Food>::iterator it)
+void Foods::removeFood(const int index) 
 {
-    if (it != _foodList.end()) 
+    if (index >= 0 && index < _foodList.size())
     {
-        _foodList.erase(it);
-        std::cout << "  Erased food at " << it->getCoord().x << "/" << it->getCoord().y << "\n";
-        _countOfFood = _foodList.size(); 
+        std::cout << "Removing food at (" << _foodList[index].getCoord().x << ", " << _foodList[index].getCoord().y << ")" << std::endl;
+        _foodList.erase(_foodList.begin() + index);
+        --_countOfFood;
+    } 
+    else 
+    {
+        std::cout << "Invalid index, cannot remove" << std::endl;
     }
 }
 

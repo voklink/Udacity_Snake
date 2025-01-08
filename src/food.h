@@ -55,8 +55,9 @@ class Foods
     void updateFoods();
     void addFoodItem(int x, int y);
     // Food* checkPositionForFood(const int x,const int y);
-    std::vector<Food>::iterator checkPositionForFood(int x, int y);
-    void removeFood(std::vector<Food>::iterator it);
+    // std::vector<Food>::iterator checkPositionForFood(const int x, const int y);
+    int checkPositionForFood(const int x, const int y);
+    void removeFood(const int index);
     void printFoodList(); 
 
   private:
