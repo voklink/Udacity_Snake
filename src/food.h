@@ -8,6 +8,11 @@
 #include "controller.h"
 #include "snake.h"
 
+#define myDEBUG(X) std::cout << (#X) << "= " << (X) << std::endl;
+#define myPRINT(X) std::cout << (X) << std::endl;
+#define myPRINT2(X,Y) std::cout << (X) << "  " << (Y) << std::endl;
+#define myFUNC std::cout << "\n-------" << __func__ << "-------" << std::endl;
+
 class Food 
 {
   public:
@@ -52,6 +57,7 @@ class Foods
     // Food* checkPositionForFood(const int x,const int y);
     std::vector<Food>::iterator checkPositionForFood(int x, int y);
     void removeFood(std::vector<Food>::iterator it);
+    void printFoodList(); 
 
   private:
 

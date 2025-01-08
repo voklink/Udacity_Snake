@@ -16,15 +16,19 @@
 class Game {
  public:
   Game(std::size_t grid_width, std::size_t grid_height);
-  void Run(Controller const &controller, Renderer &renderer,
+  void Run(Controller const &controller, Renderer *renderer,
            std::size_t target_frame_duration);
   int GetScore() const;
   int GetSize() const;
+  void togglePause();
+
+//  friend class Controller;
 
  private:
   Snake snake;
   // SDL_Point food;
   Foods _foods;
+  bool _isPaused;
 
 
   std::random_device dev;
@@ -36,6 +40,7 @@ class Game {
 
   void PlaceNewFood();
   void Update();
+
 };
 
 

@@ -4,7 +4,7 @@
 
 void Foods::addFoodItem(int x, int y)
 {
-    if (_countOfFood <= _maxCountOfFood)
+    if (_countOfFood < _maxCountOfFood)
     {
        Food myFood{};
        SDL_Point newPoint{};
@@ -20,6 +20,8 @@ void Foods::addFoodItem(int x, int y)
        _foodList.emplace_back(myFood);
        _countOfFood = _foodList.size(); 
        _timeSinceLastFoodSpawn = 0;
+
+       std::cout<< "    Added Food at " << x << "/" << y <<"\n";
     } 
 }
 
@@ -41,6 +43,7 @@ std::vector<Food>::iterator Foods::checkPositionForFood(int x, int y)
     {
         if (it->getCoord().x == x && it->getCoord().y == y)
         {
+            std::cout <<        "Found food at " << x << "/" << y << "\n";
             return it;
         }
     }
@@ -52,5 +55,31 @@ void Foods::removeFood(std::vector<Food>::iterator it)
     if (it != _foodList.end()) 
     {
         _foodList.erase(it);
+        std::cout << "  Erased food at " << it->getCoord().x << "/" << it->getCoord().y << "\n";
+        _countOfFood = _foodList.size(); 
+    }
+}
+
+// void Foods::printFoodList(const Foods &foods) 
+// {
+//     std::vector<Food> foodList = foods.getFoodList();
+//     for (const auto &food : foodList) {
+//         SDL_Point coord = food.getCoord();
+//         std::cout << "Food at (" << coord.x << ", " << coord.y << "), "
+//                   << "Age: " << food.getAge() << ", "
+//                   << "Lifetime: " << food.getLiftetime() << ", "
+//                   << "Value: " << food.getValue() << std::endl;
+//     }
+// }
+
+void Foods::printFoodList()  
+{
+    for (auto &food : _foodList) 
+    {
+        SDL_Point coord = food.getCoord();
+        std::cout << "Food at (" << coord.x << ", " << coord.y << "), "
+                    << "Age: " << food.getAge() << ", "
+                    << "Lifetime: " << food.getLiftetime() << ", "
+                    << "Value: " << food.getValue() << std::endl;
     }
 }

@@ -11,12 +11,13 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
   PlaceNewFood();
 }
 
-void Game::Run(Controller const &controller, Renderer &renderer,
+void Game::Run(Controller const &controller, Renderer *renderer,
                std::size_t target_frame_duration) {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
   Uint32 frame_duration;
+
   int frame_count = 0;
   bool running = true;
 
@@ -24,9 +25,10 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
+    controller.HandleInput(running, snake, *this);
+    // controller.HandleInput(running, snake);
     Update();
-    renderer.Render(snake, _foods);
+    renderer->Render(snake, _foods);
 
     frame_end = SDL_GetTicks();
 
@@ -37,7 +39,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer->UpdateWindowTitle(score, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -47,8 +49,15 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // achieve the correct frame rate.
     if (frame_duration < target_frame_duration) {
       SDL_Delay(target_frame_duration - frame_duration);
+      myPRINT("     delay");
     }
+    else {
+      myPRINT("------------------------------------------------------------NO DELAY");
+    }
+
+    // running = still_running;
   }
+  return;
 }
 
 void Game::PlaceNewFood() {
@@ -71,6 +80,8 @@ void Game::PlaceNewFood() {
 // }
 
 void Game::Update() {
+  myFUNC;
+  if (this->_isPaused) return;
   if (!snake.alive) return;
 
   snake.Update();
@@ -78,9 +89,9 @@ void Game::Update() {
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
 
+  std::cout << "Snake is at "  << new_x << "/" << new_y << "\n";
   // Check if there's food over here
   auto it = _foods.checkPositionForFood(new_x, new_y);
-
   if (it != _foods.getFoodList().end()) 
   {
     score++;
@@ -90,6 +101,17 @@ void Game::Update() {
     snake.GrowBody();
     // snake.speed += 0.02;
   }
+  myPRINT("FoodList after Update:")
+  _foods.printFoodList();
+  myPRINT("================================================")
+  return;
+}
+
+// Adding Pause-Functionality
+
+// Toggle the Pause status
+void Game::togglePause(){
+  this->_isPaused = this->_isPaused ? false : true;
 }
 
 int Game::GetScore() const { return score; }
