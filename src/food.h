@@ -7,6 +7,8 @@
 #include "SDL.h"
 #include "controller.h"
 #include "snake.h"
+#include <chrono>
+#include <random>
 
 #define myDEBUG(X) std::cout << (#X) << "= " << (X) << std::endl;
 #define myPRINT(X) std::cout << (X) << std::endl;
@@ -16,14 +18,16 @@
 class Food 
 {
   public:
-    Food () {};
+    Food();
+    // Food () {};
     ~Food () {};
 
   //Getter/Setter
     SDL_Point getCoord (){return _coordinates;};
-    uint getAge (){return _age;};
-    uint getLiftetime (){return _lifetime;};
+    std::chrono::milliseconds  getAge(){return _age;};
+    uint getLifetime (){return _lifetime;};
     uint getValue (){ return _value; };
+    std::chrono::milliseconds getTimeSinceSpawn() const;
     
     void setCoord (SDL_Point newCoordinate){ _coordinates = newCoordinate;};
     void setLiftetime (uint newLiftetime){_lifetime =  newLiftetime;};
@@ -38,10 +42,12 @@ class Food
   private:
     uint _value;
     uint _growth;
-    uint _age;
+    std::chrono::milliseconds _age;
     uint _lifetime;
     SDL_Point _coordinates;
+    std::chrono::time_point<std::chrono::steady_clock> _spawnTime;
 
+    void setAge (std::chrono::milliseconds  newAgeInSec){ _age = newAgeInSec;};
 };
  // ------------------------------------------------------------------------------------------------
 
@@ -59,6 +65,7 @@ class Foods
     int checkPositionForFood(const int x, const int y);
     void removeFood(const int index);
     void printFoodList(); 
+    void updateFoodList();
 
   private:
 

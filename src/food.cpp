@@ -1,18 +1,47 @@
 #include "food.h"
 #include <iostream>
+#include <sys/types.h>
 #include "SDL.h"
+// --------------------------------------------------------------------------
+// Stuff for class FOOD 
+// --------------------------------------------------------------------------
+
+// Constructor, which sets the spawn time
+Food::Food() : _spawnTime(std::chrono::steady_clock::now()) {}
+
+std::chrono::milliseconds Food::getTimeSinceSpawn() const
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _spawnTime);
+}
+
+void Food::update()
+{
+    setAge(getTimeSinceSpawn());
+}
+
+
+
+// --------------------------------------------------------------------------
+// Stuff for class FOOD 
+// --------------------------------------------------------------------------
+
 
 void Foods::addFoodItem(int x, int y)
 {
     if (_countOfFood < _maxCountOfFood)
     {
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(1000, 5000);
+
        Food myFood{};
        SDL_Point newPoint{};
 
        newPoint.x = x;
        newPoint.y = y;
 
-       myFood.setLiftetime(100);
+       myFood.setLiftetime(dis(gen));
        myFood.setValue(1);
        myFood.setGrowth(1);
        myFood.setCoord(newPoint);
@@ -53,17 +82,29 @@ void Foods::removeFood(const int index)
     }
 }
 
-// void Foods::printFoodList(const Foods &foods) 
-// {
-//     std::vector<Food> foodList = foods.getFoodList();
-//     for (const auto &food : foodList) {
-//         SDL_Point coord = food.getCoord();
-//         std::cout << "Food at (" << coord.x << ", " << coord.y << "), "
-//                   << "Age: " << food.getAge() << ", "
-//                   << "Lifetime: " << food.getLiftetime() << ", "
-//                   << "Value: " << food.getValue() << std::endl;
-//     }
-// }
+void Foods::updateFoodList() 
+{
+    myFUNC;
+    for (auto it = _foodList.begin(); it != _foodList.end(); ) 
+    {
+        myDEBUG(it->getTimeSinceSpawn().count());
+        myDEBUG(it->getLifetime());
+        if (it->getTimeSinceSpawn().count()>it->getLifetime())
+        {
+            it = _foodList.erase(it);       // Using ERASE makes it safe to remove an item from the vector during the loop!
+            _countOfFood--;
+        } else {
+            ++it;
+        }
+    }
+
+
+}
+
+
+
+
+
 
 void Foods::printFoodList()  
 {
@@ -71,8 +112,8 @@ void Foods::printFoodList()
     {
         SDL_Point coord = food.getCoord();
         std::cout << "Food at (" << coord.x << ", " << coord.y << "), "
-                    << "Age: " << food.getAge() << ", "
-                    << "Lifetime: " << food.getLiftetime() << ", "
+                    << "Age: " << (food.getTimeSinceSpawn().count()) << ", "
+                    << "Lifetime: " << food.getLifetime() << ", "
                     << "Value: " << food.getValue() << std::endl;
     }
 }

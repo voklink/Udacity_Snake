@@ -55,14 +55,17 @@ void Game::Run(Controller const &controller, Renderer *renderer,
   }
 }
 
-void Game::PlaceNewFood() {
+void Game::PlaceNewFood() 
+{
   int x, y;
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
     // Check that the location is not occupied by a snake item before placing
     // food.
-    if (!snake.SnakeCell(x, y)) {
+    if ((!snake.SnakeCell(x, y)) &&
+        (_foods.checkPositionForFood(x,y) == -1))
+    {
       _foods.addFoodItem(x,y);
       return;
     }
@@ -87,6 +90,10 @@ void Game::Update() {
   std::cout << "Snake is at "  << new_x << "/" << new_y << "\n";
   // Check if there's food over here
   int indexWithFood = _foods.checkPositionForFood(new_x, new_y);
+
+  _foods.updateFoodList();
+  PlaceNewFood();
+
   if (indexWithFood != -1) 
   {
     myPRINT("Scored!!!")
@@ -103,7 +110,7 @@ void Game::Update() {
   }
 
   // myPRINT("FoodList after Update:")
-  // _foods.printFoodList();
+  _foods.printFoodList();
   myPRINT("================================================")
   return;
 }
