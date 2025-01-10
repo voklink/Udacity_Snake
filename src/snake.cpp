@@ -77,3 +77,9 @@ bool Snake::SnakeCell(int x, int y) {
   }
   return false;
 }
+
+// void Snake::storeAllSnakeCoordinates(std::vector<SDL_Point>& occupiedList) const
+// {
+//     occupiedList.emplace_back(SDL_Point(static_cast<int>(head_x), static_cast<int>(head_y)));
+//     occupiedList.insert(occupiedList.end(),body.begin(), body.end());
+// }

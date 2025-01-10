@@ -26,6 +26,7 @@ class Game {
   Snake snake;
   // SDL_Point food;
   Foods _foods;
+  std::vector<SDL_Point> _occupiedList;
   bool _isPaused;
 
 
@@ -37,6 +38,8 @@ class Game {
   int score{0};
 
   void PlaceNewFood();
+  void updateOccupiedList();
+  void printOccupiedList();
   void Update();
 
 };

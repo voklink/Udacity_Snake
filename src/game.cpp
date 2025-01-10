@@ -5,13 +5,15 @@
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
+      _foods(grid_width, grid_height),
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
-      random_h(0, static_cast<int>(grid_height - 1)) {
-  PlaceNewFood();
-  PlaceNewFood();
-  PlaceNewFood();
-  PlaceNewFood();
+      random_h(0, static_cast<int>(grid_height - 1)) 
+{
+  // PlaceNewFood();
+  // PlaceNewFood();
+  // PlaceNewFood();
+  // PlaceNewFood();
 }
 
 void Game::Run(Controller const &controller, Renderer *renderer,
@@ -55,26 +57,21 @@ void Game::Run(Controller const &controller, Renderer *renderer,
   }
 }
 
-void Game::PlaceNewFood() 
-{
-  int x, y;
-  while (true) {
-    x = random_w(engine);
-    y = random_h(engine);
-    // Check that the location is not occupied by a snake item before placing
-    // food.
-    if ((!snake.SnakeCell(x, y)) &&
-        (_foods.checkPositionForFood(x,y) == -1))
-    {
-      _foods.addFoodItem(x,y);
-      return;
-    }
-  }
-}
-
-// void Game::UpdateFood() 
+// void Game::PlaceNewFood() 
 // {
-
+//   int x, y;
+//   while (true) {
+//     x = random_w(engine);
+//     y = random_h(engine);
+//     // Check that the location is not occupied by a snake item before placing
+//     // food.
+//     if ((!snake.SnakeCell(x, y)) &&
+//         (_foods.checkPositionForFood(x,y) == -1))
+//     {
+//       _foods.addFoodItem(x,y);
+//       return;
+//     }
+//   }
 // }
 
 void Game::Update() {
@@ -83,33 +80,34 @@ void Game::Update() {
   myFUNC;
 
   snake.Update();
-
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
+  std::cout << "Snakehead is at "  << new_x << "/" << new_y << "\n";
+  
+  updateOccupiedList();
+  _foods.updateFoodList(_occupiedList);
 
-  std::cout << "Snake is at "  << new_x << "/" << new_y << "\n";
+
   // Check if there's food over here
-  int indexWithFood = _foods.checkPositionForFood(new_x, new_y);
+  // int indexWithFood = _foods.checkPositionForFood(new_x, new_y);
 
-  _foods.updateFoodList();
-  PlaceNewFood();
+  // PlaceNewFood();
 
-  if (indexWithFood != -1) 
-  {
-    myPRINT("Scored!!!")
+  // if (indexWithFood != -1) 
+  // {
+  //   myPRINT("Scored!!!")
 
-    score++;
-    _foods.removeFood(indexWithFood);
-    PlaceNewFood();
-    // Grow snake and increase speed.
-    snake.GrowBody();
-    // snake.speed += 0.02;
-  }
-  else {
-    std::cout << "No food found at (" << new_x << ", " << new_y << ")" << std::endl;
-  }
+  //   score++;
+  //   _foods.removeFood(indexWithFood);
+  //   // PlaceNewFood();
+  //   // Grow snake and increase speed.
+  //   snake.GrowBody();
+  //   // snake.speed += 0.02;
+  // }
+  // else {
+  //   std::cout << "No food found at (" << new_x << ", " << new_y << ")" << std::endl;
+  // }
 
-  // myPRINT("FoodList after Update:")
   _foods.printFoodList();
   myPRINT("================================================")
   return;
@@ -123,3 +121,26 @@ void Game::togglePause()
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+
+void Game::updateOccupiedList()
+{ 
+  _occupiedList = std::vector<SDL_Point>{};       // reset the occupiedList
+  _occupiedList.emplace_back(SDL_Point{static_cast<int>(snake.head_x), static_cast<int>(snake.head_y)});
+  _occupiedList.insert(_occupiedList.end(),snake.body.begin(), snake.body.end());
+   
+  std::vector<SDL_Point> foodCoordinates{_foods.getAllFoodCoordinates()};
+  _occupiedList.insert(_occupiedList.end(),foodCoordinates.begin(), foodCoordinates.end());
+  
+  printOccupiedList();
+}
+
+void Game::printOccupiedList()
+{
+  std::cout << "---------------------------------------------" << std::endl;
+  std::cout << "All blocked points: " << std::endl;
+    for (const auto& point : _occupiedList)
+     {
+        std::cout << point.x << ", " << point.y << std::endl;
+    }
+  std::cout << "---------------------------------------------" << std::endl;
+}

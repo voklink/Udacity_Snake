@@ -23,7 +23,7 @@ class Food
     ~Food () {};
 
   //Getter/Setter
-    SDL_Point getCoord (){return _coordinates;};
+    SDL_Point getCoord () const {return _coordinates;} ;
     std::chrono::milliseconds  getAge(){return _age;};
     uint getLifetime (){return _lifetime;};
     uint getValue (){ return _value; };
@@ -54,18 +54,22 @@ class Food
 class Foods
 {
   public:
-    Foods(){};
+    Foods(int grid_width, int grid_height);
     ~Foods(){};
 
-    std::vector<Food> getFoodList() {return _foodList;};
+    std::vector<Food> getFoodList() const {return _foodList;};
     void updateFoods();
-    void addFoodItem(int x, int y);
+    void addFoodItemAtPoint(int x, int y);
     // Food* checkPositionForFood(const int x,const int y);
     // std::vector<Food>::iterator checkPositionForFood(const int x, const int y);
     int checkPositionForFood(const int x, const int y);
     void removeFood(const int index);
     void printFoodList(); 
     void updateFoodList();
+    void updateFoodList(std::vector<SDL_Point>& occupiedList) ;
+    // void addAllFoodCoordinates(std::vector<SDL_Point>& occupiedList) const;
+    std::vector<SDL_Point> getAllFoodCoordinates() const;
+    void addNewFood(std::vector<SDL_Point>& occupiedList) ;
 
   private:
 
@@ -73,6 +77,15 @@ class Foods
     uint _countOfFood{};
     uint _maxCountOfFood{3};
     uint _timeSinceLastFoodSpawn;
+    int _grid_width;
+    int _grid_height;
+
+    // Members for Random generation
+    // taken from ChatBot
+    std::random_device _rd;
+    std::mt19937 _gen;
+    std::uniform_int_distribution<> _dis_width;
+    std::uniform_int_distribution<> _dis_height;
 
 
 
