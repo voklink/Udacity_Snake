@@ -10,10 +10,6 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1)) 
 {
-  // PlaceNewFood();
-  // PlaceNewFood();
-  // PlaceNewFood();
-  // PlaceNewFood();
 }
 
 void Game::Run(Controller const &controller, Renderer *renderer,
@@ -57,23 +53,6 @@ void Game::Run(Controller const &controller, Renderer *renderer,
   }
 }
 
-// void Game::PlaceNewFood() 
-// {
-//   int x, y;
-//   while (true) {
-//     x = random_w(engine);
-//     y = random_h(engine);
-//     // Check that the location is not occupied by a snake item before placing
-//     // food.
-//     if ((!snake.SnakeCell(x, y)) &&
-//         (_foods.checkPositionForFood(x,y) == -1))
-//     {
-//       _foods.addFoodItem(x,y);
-//       return;
-//     }
-//   }
-// }
-
 void Game::Update() {
   if (this->_isPaused) return;
   if (!snake.alive) return;
@@ -85,30 +64,13 @@ void Game::Update() {
   std::cout << "Snakehead is at "  << new_x << "/" << new_y << "\n";
   
   updateOccupiedList();
-  _foods.updateFoodList(_occupiedList);
+  int growth{0};
+  int currentScore{0};
+  _foods.updateFoodList(_occupiedList, currentScore, growth);
+  if (growth != 0) {snake.GrowBody(growth);};
+  score += currentScore;
 
 
-  // Check if there's food over here
-  // int indexWithFood = _foods.checkPositionForFood(new_x, new_y);
-
-  // PlaceNewFood();
-
-  // if (indexWithFood != -1) 
-  // {
-  //   myPRINT("Scored!!!")
-
-  //   score++;
-  //   _foods.removeFood(indexWithFood);
-  //   // PlaceNewFood();
-  //   // Grow snake and increase speed.
-  //   snake.GrowBody();
-  //   // snake.speed += 0.02;
-  // }
-  // else {
-  //   std::cout << "No food found at (" << new_x << ", " << new_y << ")" << std::endl;
-  // }
-
-  _foods.printFoodList();
   myPRINT("================================================")
   return;
 }
@@ -131,7 +93,7 @@ void Game::updateOccupiedList()
   std::vector<SDL_Point> foodCoordinates{_foods.getAllFoodCoordinates()};
   _occupiedList.insert(_occupiedList.end(),foodCoordinates.begin(), foodCoordinates.end());
   
-  printOccupiedList();
+  // printOccupiedList();
 }
 
 void Game::printOccupiedList()

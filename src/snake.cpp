@@ -1,4 +1,5 @@
 #include "snake.h"
+#include "food.h"
 #include <cmath>
 #include <iostream>
 
@@ -14,7 +15,8 @@ void Snake::Update() {
 
   // Update all of the body vector items if the snake head has moved to a new
   // cell.
-  if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y) {
+  if ((current_cell.x != prev_cell.x || current_cell.y != prev_cell.y))
+   {
     UpdateBody(current_cell, prev_cell);
   }
 }
@@ -47,13 +49,15 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   // Add previous head location to vector
   body.push_back(prev_head_cell);
 
-  if (!growing) {
+
+  if (growing == 0) {
     // Remove the tail from the vector.
     body.erase(body.begin());
   } else {
-    growing = false;
-    size++;
+        growing--;
   }
+
+  // printBodyList();
 
   // Check if the snake has died.
   for (auto const &item : body) {
@@ -63,7 +67,7 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   }
 }
 
-void Snake::GrowBody() { growing = true; }
+void Snake::GrowBody(const int growth) { growing = growth; }
 
 // Inefficient method to check if cell is occupied by snake.
 bool Snake::SnakeCell(int x, int y) {
@@ -78,8 +82,14 @@ bool Snake::SnakeCell(int x, int y) {
   return false;
 }
 
-// void Snake::storeAllSnakeCoordinates(std::vector<SDL_Point>& occupiedList) const
-// {
-//     occupiedList.emplace_back(SDL_Point(static_cast<int>(head_x), static_cast<int>(head_y)));
-//     occupiedList.insert(occupiedList.end(),body.begin(), body.end());
-// }
+
+void Snake::printBodyList()
+{
+  std::cout << "---------------------------------------------" << std::endl;
+  std::cout << "All Snake body points: " << std::endl;
+    for (const auto& point : body)
+     {
+        std::cout << point.x << ", " << point.y << std::endl;
+    }
+  std::cout << "---------------------------------------------" << std::endl;
+}

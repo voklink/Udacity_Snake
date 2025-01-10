@@ -4,6 +4,11 @@
 #include <vector>
 #include "SDL.h"
 
+#define myDEBUG(X) std::cout << (#X) << "= " << (X) << std::endl;
+#define myPRINT(X) std::cout << (X) << std::endl;
+#define myPRINT2(X,Y) std::cout << (X) << "  " << (Y) << std::endl;
+#define myFUNC std::cout << "\n-------" << __func__ << "-------" << std::endl;
+
 class Snake {
  public:
   enum class Direction { kUp, kDown, kLeft, kRight };
@@ -16,8 +21,9 @@ class Snake {
 
   void Update();
 
-  void GrowBody();
+  void GrowBody(const int growth);
   bool SnakeCell(int x, int y);
+  void printBodyList();
 
   Direction direction = Direction::kUp;
 
@@ -32,7 +38,7 @@ class Snake {
   void UpdateHead();
   void UpdateBody(SDL_Point &current_cell, SDL_Point &prev_cell);
 
-  bool growing{false};
+  int growing{0};
   int grid_width;
   int grid_height;
 };

@@ -27,6 +27,7 @@ class Food
     std::chrono::milliseconds  getAge(){return _age;};
     uint getLifetime (){return _lifetime;};
     uint getValue (){ return _value; };
+    uint getGrowth (){ return _growth; };
     std::chrono::milliseconds getTimeSinceSpawn() const;
     
     void setCoord (SDL_Point newCoordinate){ _coordinates = newCoordinate;};
@@ -66,8 +67,7 @@ class Foods
     void removeFood(const int index);
     void printFoodList(); 
     void updateFoodList();
-    void updateFoodList(std::vector<SDL_Point>& occupiedList) ;
-    // void addAllFoodCoordinates(std::vector<SDL_Point>& occupiedList) const;
+    void updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int& growth);
     std::vector<SDL_Point> getAllFoodCoordinates() const;
     void addNewFood(std::vector<SDL_Point>& occupiedList) ;
 
@@ -75,7 +75,7 @@ class Foods
 
     std::vector<Food> _foodList;
     uint _countOfFood{};
-    uint _maxCountOfFood{3};
+    uint _maxCountOfFood{5};
     uint _timeSinceLastFoodSpawn;
     int _grid_width;
     int _grid_height;

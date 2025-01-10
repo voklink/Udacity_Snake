@@ -59,22 +59,16 @@ void Foods::addFoodItemAtPoint(int x, int y)
 
 void Foods::addNewFood(std::vector<SDL_Point>& occupiedList) 
 {
-    myFUNC;
         while (_countOfFood < _maxCountOfFood) 
         {
             int x = _dis_width(_gen);
             int y = _dis_height(_gen);
             
-            myDEBUG(x);
-            myDEBUG(y);
             bool pointIsOccupied{false};
             // Check that the location is not occupied by a snake item before placing
             // food.
-            myPRINT("Checking points of OccList:")
             for (auto point : occupiedList)
             {
-                myDEBUG(point.x);
-                myDEBUG(point.y);
                 if ((point.x == x) && (point.y == y))
                 {
                     pointIsOccupied |= true;
@@ -96,7 +90,6 @@ int Foods::checkPositionForFood(const int x, const int y)
     for (size_t i = 0; i < _foodList.size(); ++i) 
     {
         SDL_Point coord = _foodList[i].getCoord();
-        std::cout << "Checking food at (" << coord.x << ", " << coord.y << ") against (" << x << ", " << y << ")" << std::endl;
         if (coord.x == x && coord.y == y) {
             std::cout << "Found food at " << x << "/" << y << "\n";
             return i;
@@ -119,13 +112,19 @@ void Foods::removeFood(const int index)
     }
 }
 
-void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList) 
+void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int& growth) 
 {
-    while (_countOfFood < _maxCountOfFood)
+    //Check if a food was eaten
+    // the snake head is always at index 0 of the occupied list
+    int indexWithFood = checkPositionForFood(occupiedList[0].x, occupiedList[0].y);
+    if (indexWithFood != -1) 
     {
-        addNewFood(occupiedList);
+        score = _foodList[indexWithFood].getValue();       
+        growth = _foodList[indexWithFood].getGrowth();       
+        removeFood(indexWithFood);
     }
 
+    // Check, if food needs to be removed
     for (auto it = _foodList.begin(); it != _foodList.end(); ) 
     {
         if (it->getTimeSinceSpawn().count()>it->getLifetime())
@@ -136,6 +135,14 @@ void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList)
             ++it;
         }
     }
+
+    // Finally add new food if there's not enough
+    while (_countOfFood < _maxCountOfFood)
+    {
+        addNewFood(occupiedList);
+    }
+
+    // printFoodList();
 }
 
 
