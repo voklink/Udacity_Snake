@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include "SDL.h"
 // --------------------------------------------------------------------------
-// Stuff for class FOOD 
+// class FOOD 
 // --------------------------------------------------------------------------
 
 // Constructor, which sets the spawn time
@@ -16,8 +16,61 @@ std::chrono::milliseconds Food::getTimeSinceSpawn() const
 
 void Food::update()
 {
-    setAge(getTimeSinceSpawn());
+    myPRINT("Calling Food:Update");
+    setAge(getTimeSinceSpawn().count());
 }
+
+// --------------------------------------------------------------------------
+// Child class MovingFood
+// --------------------------------------------------------------------------
+
+MovingFood::MovingFood() : Food() {
+    // Todo: Additional initialization for SpecialFood if needed
+}
+
+void MovingFood::update() 
+{
+    // Call the base class update method
+    Food::update();
+    myPRINT("       Calling MOVING Food:Update");
+
+    // Random Generation taken from ChatBot
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis_prob(0.0, 1.0);
+    std::uniform_int_distribution<> dis_direction(0, 3);
+
+   
+    if (dis_prob(gen) < 0.9)
+    {
+        myPRINT(" -------------------> Food should MOVE")
+        int new_x = _coordinates.x;
+        int new_y = _coordinates.y;
+
+        // Generate a random direction: 0 = up, 1 = down, 2 = left, 3 = right
+        // I don't check for Grid dimensions here but later....if a food moved outside the grid, it 'll be removed
+        int direction = dis_direction(gen);
+        switch (direction) 
+        {
+            case 0: // Up
+                new_y = getCoord().y - 1;
+                break;
+            case 1: // Down
+                new_y = getCoord().y + 1 ;
+                break;
+            case 2: // Left
+                new_x = getCoord().x - 1;
+                break;
+            case 3: // Right
+                new_x = getCoord().x + 1;
+                break;
+        }
+        setCoord(SDL_Point{new_x, new_y});
+    }
+
+}
+
+
 
 
 
@@ -37,12 +90,12 @@ Foods::Foods(int grid_width, int grid_height)
 
 void Foods::addFoodItemAtPoint(int x, int y)
 {
-       Food myFood{};
+       MovingFood myFood{};
        SDL_Point newPoint{x,y};
 
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis(1000, 5000);
+        std::uniform_int_distribution<> dis(20000, 20000);
 
 
        myFood.setLiftetime(dis(gen));
@@ -127,7 +180,11 @@ void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int
     // Check, if food needs to be removed
     for (auto it = _foodList.begin(); it != _foodList.end(); ) 
     {
-        if (it->getTimeSinceSpawn().count()>it->getLifetime())
+        if ((it->getTimeSinceSpawn().count()>it->getLifetime()) ||
+            (it->getCoord().x < 0) ||
+            (it->getCoord().x > _grid_width) ||
+            (it->getCoord().y < 0) ||
+            (it->getCoord().y > _grid_height))
         {
             it = _foodList.erase(it);       // Using ERASE makes it safe to remove an item from the vector during the loop!
             _countOfFood--;
@@ -141,8 +198,17 @@ void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int
     {
         addNewFood(occupiedList);
     }
+    updateFoods();
 
-    // printFoodList();
+    printFoodList();
+}
+
+void Foods::updateFoods()
+{
+    for (auto &food : _foodList) 
+    {
+        food.update();
+    }
 }
 
 
@@ -162,7 +228,8 @@ void Foods::printFoodList()
     {
         SDL_Point coord = food.getCoord();
         std::cout << "Food at (" << coord.x << ", " << coord.y << "), "
-                    << "Age: " << (food.getTimeSinceSpawn().count()) << ", "
+                    << "AgeDyn: " << (food.getTimeSinceSpawn().count()) << ", "
+                    << "Age: " << (food.getAge()) << ", "
                     << "Lifetime: " << food.getLifetime() << ", "
                     << "Value: " << food.getValue() << std::endl;
     }

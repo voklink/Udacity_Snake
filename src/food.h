@@ -1,6 +1,7 @@
 #ifndef FOOD_H
 #define FOOD_H
 
+#include <cstdint>
 #include <random>
 #include <sys/types.h>
 #include <vector>
@@ -15,6 +16,10 @@
 #define myPRINT2(X,Y) std::cout << (X) << "  " << (Y) << std::endl;
 #define myFUNC std::cout << "\n-------" << __func__ << "-------" << std::endl;
 
+
+// --------------------------------------------------------------------------
+// class FOOD 
+// --------------------------------------------------------------------------
 class Food 
 {
   public:
@@ -24,7 +29,7 @@ class Food
 
   //Getter/Setter
     SDL_Point getCoord () const {return _coordinates;} ;
-    std::chrono::milliseconds  getAge(){return _age;};
+    int32_t getAge(){return _age;};
     uint getLifetime (){return _lifetime;};
     uint getValue (){ return _value; };
     uint getGrowth (){ return _growth; };
@@ -37,21 +42,36 @@ class Food
 
   // Public Functions
 
-  void update();
+  virtual void update();
 
 
   private:
     uint _value;
     uint _growth;
-    std::chrono::milliseconds _age;
+    int32_t _age;
     uint _lifetime;
-    SDL_Point _coordinates;
     std::chrono::time_point<std::chrono::steady_clock> _spawnTime;
 
-    void setAge (std::chrono::milliseconds  newAgeInSec){ _age = newAgeInSec;};
+    void setAge (int32_t  newAgeInSec){ _age = newAgeInSec;};
+  protected:
+    SDL_Point _coordinates;
 };
  // ------------------------------------------------------------------------------------------------
 
+
+// --------------------------------------------------------------------------
+// child class MovingFOOD 
+// --------------------------------------------------------------------------
+  class MovingFood : public Food {
+  public:
+      MovingFood();
+
+      void update() override;
+  };
+
+// --------------------------------------------------------------------------
+// child class MovingFOOD 
+// --------------------------------------------------------------------------
 class Foods
 {
   public:
