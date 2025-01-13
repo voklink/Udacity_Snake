@@ -25,7 +25,6 @@ class Food
 {
   public:
     Food(int x, int y);
-    // Food () {};
     virtual ~Food () {};
 
   //Getter/Setter
@@ -83,21 +82,18 @@ class Foods
     Foods(int grid_width, int grid_height);
     ~Foods(){};
 
-    // std::vector<Food> getFoodList() const {return _foodList;};
-    std::vector<std::unique_ptr<Food>> getFoodList() const; // Changed to return unique_ptr
+    std::vector<std::unique_ptr<Food>> getFoodList() const; 
     void updateFoodItems(std::vector<SDL_Point>& occupiedList);
     int checkPositionForFood(const int x, const int y);
     void removeFood(const int index);
     void printFoodList(); 
-    // void updateFoodList();
     void updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int& growth);
     std::vector<SDL_Point> getAllFoodCoordinates() const;
     void addNewFood(std::vector<SDL_Point>& occupiedList) ;
 
   private:
 
-    // std::vector<Food> _foodList;
-    std::vector<std::unique_ptr<Food>> _foodList; // Changed to unique_ptr
+    std::vector<std::unique_ptr<Food>> _foodList; 
     uint _countOfFood{};
     uint _maxCountOfFood{5};
     uint _timeSinceLastFoodSpawn;
@@ -110,8 +106,6 @@ class Foods
     std::mt19937 _gen;
     std::uniform_int_distribution<> _dis_width;
     std::uniform_int_distribution<> _dis_height;
-
-
 
 };
 

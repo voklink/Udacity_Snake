@@ -2,7 +2,6 @@
 #include <iostream>
 #include <sys/types.h>
 #include "SDL.h"
-#include <algorithm>
 
 // --------------------------------------------------------------------------
 // class FOOD 
@@ -120,6 +119,7 @@ Foods::Foods(int grid_width, int grid_height)
       _dis_height(0, grid_height - 1) {}
 
 // Getter for FoodList (with UniquePointers)
+// returns a copy!
 std::vector<std::unique_ptr<Food>> Foods::getFoodList() const 
 {
     std::vector<std::unique_ptr<Food>> foodListCopy;
