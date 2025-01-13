@@ -87,11 +87,11 @@ void Renderer::Render(Snake const snake, const Foods &foods) {
   SDL_RenderClear(sdl_renderer);
 
   // Render foodList
-  for (auto food : foods.getFoodList())
+  for (const auto& food : foods.getFoodList())
   {
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
-    block.x = food.getCoord().x * block.w;
-    block.y = food.getCoord().y * block.h;
+    block.x = food->getCoord().x * block.w;
+    block.y = food->getCoord().y * block.h;
     SDL_RenderFillRect(sdl_renderer, &block);
   }
 
