@@ -43,7 +43,7 @@ class Food
 
   // Public Functions
 
-  virtual void update();
+  virtual void update(std::vector<SDL_Point>& occupiedList);
 
 
   protected:
@@ -66,7 +66,8 @@ class Food
   public:
       MovingFood(int grid_width, int grid_height);
 
-      void update() override;
+      void update(std::vector<SDL_Point>& occupiedList) override;
+      bool isPointInList(const SDL_Point& point, std::vector<SDL_Point>& pointList); 
 
   private:
     int _grid_width;
@@ -84,8 +85,7 @@ class Foods
 
     // std::vector<Food> getFoodList() const {return _foodList;};
     std::vector<std::unique_ptr<Food>> getFoodList() const; // Changed to return unique_ptr
-    void updateFoods();
-    void addFoodItemAtPoint(const int x,const int y);
+    void updateFoodItems(std::vector<SDL_Point>& occupiedList);
     int checkPositionForFood(const int x, const int y);
     void removeFood(const int index);
     void printFoodList(); 
