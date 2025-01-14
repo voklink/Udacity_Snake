@@ -106,7 +106,6 @@ class Foods
     std::vector<std::unique_ptr<Food>> _foodList; 
     uint _countOfFood{};
     uint _maxCountOfFood{5};
-    uint _timeSinceLastFoodSpawn;
     int _grid_width;
     int _grid_height;
 

@@ -1,12 +1,15 @@
 # CPPND: Capstone Snake Game Example
+This is an edited repo of the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). 
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+# New Features
+The player can pause the game by hitting the space bar.
 
-<img src="snake_game.gif"/>
+New food types were added to the game. Additionally, several foods are placed on the grid at the same time.
+This was done by creating a dedicated food class which manages all the different foods.
+Each food type can have specific attributes and behaviours as each food type is implemented as a child class.
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
-
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+Foods can also impact the game by e.g. speeding up the snake, e.g. the food type "HyperFood" will speed up the snake
+for 2 seconds. The timer for this implemented as its own thread.
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
