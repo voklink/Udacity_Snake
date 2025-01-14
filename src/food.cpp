@@ -19,6 +19,7 @@ Food::Food(int x, int y) : _spawnTime(std::chrono::steady_clock::now()),
     setLiftetime(dis(gen));
     setValue(1);
     setGrowth(1);
+    _isHyper = false;
 }
 
 std::chrono::milliseconds Food::getTimeSinceSpawn() const
@@ -42,6 +43,7 @@ MovingFood::MovingFood(int x, int y) : Food(x, y)
        setLiftetime(std::numeric_limits<uint>::max());
        setValue(2);
        setGrowth(2);
+       _isHyper = false;
 
        std::cout<< "    Added MOVING food at " << x << "/" << y <<"\n";
 }
@@ -101,7 +103,20 @@ bool MovingFood::isPointInList(const SDL_Point& point, std::vector<SDL_Point>& p
     return false;
 }
 
+// --------------------------------------------------------------------------
+// Child class Hyperood
+// --------------------------------------------------------------------------
 
+// Constructor
+HyperFood::HyperFood(int x, int y) : Food(x, y)
+{
+    //    setLiftetime(std::numeric_limits<uint>::max());
+       setValue(5);
+       setGrowth(5);
+       _isHyper = true;
+
+       std::cout<< "    Added HYPER food at " << x << "/" << y <<"\n";
+}
 
 
 
@@ -113,7 +128,6 @@ bool MovingFood::isPointInList(const SDL_Point& point, std::vector<SDL_Point>& p
 Foods::Foods(int grid_width, int grid_height)
     : _grid_width(grid_width),
       _grid_height(grid_height),
-      _timeSinceLastFoodSpawn(0),
       _gen(_rd()),
       _dis_width(0, grid_width - 1),
       _dis_height(0, grid_height - 1) {}
@@ -139,7 +153,7 @@ void Foods::addNewFood(std::vector<SDL_Point>& occupiedList)
             int y = _dis_height(_gen);
             
             bool pointIsOccupied{false};
-            // Check that the location is not occupied by a snake item before placing
+            // Check that the location is not occupied by a snake or other food item before placing
             // food.
             for (auto point : occupiedList)
             {
@@ -154,16 +168,22 @@ void Foods::addNewFood(std::vector<SDL_Point>& occupiedList)
             {
                 occupiedList.emplace_back(SDL_Point{x,y});
 
-                // Very Basic decision, which food to spawn
-                // Will need more sophisticated concept once there are more food-classes
-                if ((x+y) % 2 == 0) 
+
+                std::uniform_int_distribution<> dis_typeOfFood(0, 2);
+
+                  int typeOfFood = dis_typeOfFood(_gen);
+                switch (typeOfFood) 
                 {
-                    _foodList.emplace_back(std::make_unique<Food>(x, y));
-                } else 
-                {
-                    _foodList.emplace_back(std::make_unique<MovingFood>(x, y));
+                    case 0:
+                        _foodList.emplace_back(std::make_unique<Food>(x, y));
+                        break;
+                    case 1: 
+                        _foodList.emplace_back(std::make_unique<MovingFood>(x, y));
+                        break;
+                    case 2: 
+                        _foodList.emplace_back(std::make_unique<HyperFood>(x, y));
+                        break;
                 }
-                _timeSinceLastFoodSpawn = 0;
                 _countOfFood = _foodList.size();
                 return;
             }
@@ -197,7 +217,7 @@ void Foods::removeFood(const int index)
     }
 }
 
-void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int& growth) 
+void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int& growth, bool& isHyper) 
 {
     //Check if a food was eaten
     // the snake head is always at index 0 of the occupied list
@@ -206,7 +226,8 @@ void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int
     if (indexWithFood != -1) 
     {
         score = _foodList[indexWithFood]->getValue();       
-        growth = _foodList[indexWithFood]->getGrowth();       
+        growth = _foodList[indexWithFood]->getGrowth();  
+        isHyper = _foodList[indexWithFood]->getHyper();     
         removeFood(indexWithFood);
     }
 

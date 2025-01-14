@@ -2,6 +2,15 @@
 #include <iostream>
 #include "SDL.h"
 #include "food.h"
+#include <thread>
+#include <chrono>
+#include <future>
+
+void threadSnakeIsHyper(bool *isHyper) 
+{
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    *isHyper = false;
+}
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -11,6 +20,7 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       random_h(0, static_cast<int>(grid_height - 1)) 
 {
 }
+
 
 void Game::Run(Controller const &controller, Renderer *renderer,
                std::size_t target_frame_duration) {
@@ -58,6 +68,7 @@ void Game::Update() {
   if (!snake.alive) return;
   myFUNC;
 
+  snake.speed = _isHyper? 1.0f : 0.1f;
   snake.Update();
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
@@ -66,9 +77,20 @@ void Game::Update() {
   updateOccupiedList();
   int growth{0};
   int currentScore{0};
-  _foods.updateFoodList(_occupiedList, currentScore, growth);
+  bool isHyper{false};
+  _foods.updateFoodList(_occupiedList, currentScore, growth, isHyper);
   if (growth != 0) {snake.GrowBody(growth);};
   score += currentScore;
+ 
+  if(isHyper && !_isHyper)
+  {
+    _isHyper |= isHyper;
+    std::thread hyperTimer(threadSnakeIsHyper, &_isHyper);
+    hyperTimer.detach();
+  }
+
+  myDEBUG(isHyper)
+  myDEBUG(_isHyper)
 
 
   myPRINT("================================================")
@@ -106,3 +128,4 @@ void Game::printOccupiedList()
     }
   std::cout << "---------------------------------------------" << std::endl;
 }
+

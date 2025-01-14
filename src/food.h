@@ -33,6 +33,7 @@ class Food
     uint getLifetime (){return _lifetime;};
     uint getValue (){ return _value; };
     uint getGrowth (){ return _growth; };
+    uint getHyper (){ return _isHyper; };
     std::chrono::milliseconds getTimeSinceSpawn() const;
     
     void setCoord (SDL_Point newCoordinate){ _coordinates = newCoordinate;};
@@ -51,6 +52,7 @@ class Food
     uint _growth;
     int32_t _age;
     uint _lifetime;
+    bool _isHyper;
     std::chrono::time_point<std::chrono::steady_clock> _spawnTime;
 
     void setAge (int32_t  newAgeInSec){ _age = newAgeInSec;};
@@ -63,14 +65,22 @@ class Food
 // --------------------------------------------------------------------------
   class MovingFood : public Food {
   public:
-      MovingFood(int grid_width, int grid_height);
+      MovingFood(int x, int y);
 
       void update(std::vector<SDL_Point>& occupiedList) override;
       bool isPointInList(const SDL_Point& point, std::vector<SDL_Point>& pointList); 
 
-  private:
-    int _grid_width;
-    int _grid_height;
+
+  };
+
+  // --------------------------------------------------------------------------
+// child class HyperFOOD 
+// --------------------------------------------------------------------------
+  class HyperFood : public Food {
+  public:
+      HyperFood(int x, int y);
+
+
   };
 
 // --------------------------------------------------------------------------
@@ -87,7 +97,7 @@ class Foods
     int checkPositionForFood(const int x, const int y);
     void removeFood(const int index);
     void printFoodList(); 
-    void updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int& growth);
+    void updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int& growth, bool& isHyper);
     std::vector<SDL_Point> getAllFoodCoordinates() const;
     void addNewFood(std::vector<SDL_Point>& occupiedList) ;
 

@@ -28,6 +28,7 @@ class Game {
   Foods _foods;
   std::vector<SDL_Point> _occupiedList;
   bool _isPaused;
+  bool _isHyper;
 
 
   std::random_device dev;
@@ -41,6 +42,8 @@ class Game {
   void updateOccupiedList();
   void printOccupiedList();
   void Update();
+  
+  // void threadSnakeIsHyper(bool *isHyper);
 
 };
 
