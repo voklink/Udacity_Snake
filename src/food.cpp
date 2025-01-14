@@ -254,7 +254,7 @@ void Foods::updateFoodList(std::vector<SDL_Point>& occupiedList, int& score, int
     }
     updateFoodItems(occupiedList);
 
-    printFoodList();
+    // printFoodList();
 }
 
 void Foods::updateFoodItems(std::vector<SDL_Point>& occupiedList)

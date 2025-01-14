@@ -1,4 +1,4 @@
-# CPPND: Capstone Snake Game Example
+# CPPND: Edited Capstone Snake Game
 This is an edited repo of the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). 
 
 # New Features
