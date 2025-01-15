@@ -3,13 +3,13 @@
 #include "SDL.h"
 #include "food.h"
 #include <thread>
-#include <chrono>
 #include <future>
 
-void threadSnakeIsHyper(bool *isHyper) 
+void threadSnakeIsHyper(std::shared_ptr<std::promise<void>> promise, bool *isHyper)  
 {
     std::this_thread::sleep_for(std::chrono::seconds(2));
     *isHyper = false;
+    promise->set_value(); // Notify that the work is done
 }
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
@@ -81,17 +81,19 @@ void Game::Update() {
   _foods.updateFoodList(_occupiedList, currentScore, growth, isHyper);
   if (growth != 0) {snake.GrowBody(growth);};
   score += currentScore;
- 
-  if(isHyper && !_isHyper)
+
+  if (isHyper && !_isHyper) 
   {
     _isHyper |= isHyper;
-    std::thread hyperTimer(threadSnakeIsHyper, &_isHyper);
-    hyperTimer.detach();
+
+    // Create a shared_ptr to a promise and get its future
+    auto promise = std::make_shared<std::promise<void>>();
+    std::future<void> future = promise->get_future();
+
+    // Start the thread with the shared_ptr to the promise
+    std::thread hyperTimer(threadSnakeIsHyper, promise, &_isHyper);
+    hyperTimer.detach();;
   }
-
-  myDEBUG(isHyper)
-  myDEBUG(_isHyper)
-
 
   myPRINT("================================================")
   return;

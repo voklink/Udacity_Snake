@@ -11,6 +11,33 @@ Each food type can have specific attributes and behaviours as each food type is 
 Foods can also impact the game by e.g. speeding up the snake, e.g. the food type "HyperFood" will speed up the snake
 for 2 seconds. The timer for this implemented as its own thread.
 
+# Addressed Rubric Points
+Compiling and Testing: 
+- added food.cpp, food.h
+- compiles and runs without errors based on the provided repo 
+
+Loops, Functions, I/O:
+A variety of control structures are added to the project.
+The project code is clearly organized into functions.
+The project accepts user input and processes the input --> added additional user input to pause the game
+The project uses arrays or vectors and uses constant variables. --> added variety of vectors (such as _foodList)
+
+Object Oriented Programming:
+One or more classes are added to the project with appropriate access specifiers for class members --> Base class food and child classes were added. "Food" was integrated into the "foods" class.
+Class constructors utilize member initialization lists --> yes
+Classes follow an appropriate inheritance hierarchy with virtual and override functions --> update function of child classes "food"
+
+Memory Management:
+The project makes use of references in function declarations. --> functions make use of "pass-by-reference"
+The project uses destructors appropriately. --> yes
+The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. --> yes
+The project uses smart pointers instead of raw pointers. --> yes
+
+Concurrency
+The project uses multithreading and a Promise/Future
+ 
+
+
 ## Dependencies for Running Locally
 * cmake >= 3.7
   * All OSes: [click here for installation instructions](https://cmake.org/install/)
